@@ -1,6 +1,13 @@
-#!/bin/zsh
+capture-completion()
+{
+#FIXME: Adding `read` before exits to debug moving from script to function context
 
-zmodload zsh/zpty || { echo 'error: missing module zsh/zpty' >&2; exit 1 }
+zmodload zsh/zpty || { 
+    echo 'error: missing module zsh/zpty' >&2;
+    
+    read -k1 #FIXME: Above
+    exit 1 
+}
 
 # spawn shell
 zpty z zsh -f -i
@@ -16,6 +23,7 @@ setopt rcquotes
         [[ $line == ok* ]] && return
     done
     echo 'error initializing.' >&2
+    read -k1 #FIXME: Above
     exit 2
 } =( <<< '
 # no prompt!
@@ -135,3 +143,4 @@ while zpty -r z; do :; done | while IFS= read -r line; do
 done
 
 return 2
+}
